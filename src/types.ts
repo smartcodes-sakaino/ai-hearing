@@ -52,6 +52,14 @@ export const SCALE_LABELS = [
   "完全に定着・自動化されている",
 ] as const;
 
+export interface AdminUser {
+  id: string;
+  email: string;
+  displayName: string;
+  role: string;
+  createdAt: string;
+}
+
 export interface HearingSession {
   id: string;
   companyName: string;
