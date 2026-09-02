@@ -18,6 +18,13 @@ app.use("/api/admin", adminRouter);
 app.use("/api", router);
 app.use("/auth", authRouter);
 
+// APIルート内で起きたエラーはここでcatchしてJSONで返す（プロセスを落とさない）
+app.use((err: unknown, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
+  console.error(err);
+  const message = err instanceof Error ? err.message : "internal server error";
+  res.status(500).json({ error: message });
+});
+
 const port = process.env.PORT ? Number(process.env.PORT) : 5000;
 const isProd = process.env.NODE_ENV === "production";
 

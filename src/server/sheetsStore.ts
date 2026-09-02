@@ -43,13 +43,20 @@ function makeId(prefix: string) {
   return `${prefix}_${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`;
 }
 
+/** seedSheets.tsからのみ使う、タブ全体を一括で置き換えるための型 */
+export interface SeedableCollection<T extends { id: string }> extends Collection<T> {
+  /** タブの中身を丸ごと置き換える（初期データ投入用。都度read-modify-writeする create() の連続呼び出しより高速で、
+   * 実行が失敗・中断しても「一部だけ書き込まれた中途半端な状態」にならない） */
+  replaceAll(items: T[]): Promise<void>;
+}
+
 function sheetCollection<T extends { id: string }>(
   tabName: string,
   idPrefix: string,
   header: string[],
   toRow: (item: T) => Record<string, string | number | boolean>,
   fromRow: (row: Record<string, string>) => T,
-): Collection<T> {
+): SeedableCollection<T> {
   const spreadsheetId = () => mainSpreadsheetId();
 
   async function listRaw(): Promise<T[]> {
@@ -82,6 +89,7 @@ function sheetCollection<T extends { id: string }>(
       const items = await listRaw();
       await saveAll(items.filter((i) => i.id !== id));
     },
+    replaceAll: saveAll,
   };
 }
 
@@ -209,6 +217,15 @@ const supportServices: ReadOnlyCollection<SupportService> = {
       effectCategory: r["効果区分"],
     }));
   },
+};
+
+/** seedSheets.ts専用。DataStoreインターフェースには含めない */
+export const seedableCollections = {
+  departments,
+  checkItems,
+  caseStudies,
+  aiTools,
+  adminAllowList,
 };
 
 export const sheetsStore: DataStore = {

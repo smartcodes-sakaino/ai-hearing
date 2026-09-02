@@ -1,7 +1,9 @@
 /**
  * ai-hearing用スプレッドシート（GOOGLE_SHEETS_SPREADSHEET_ID）に、
  * 5つのタブ（DepartmentMaster / CheckItemMaster / CaseStudyMaster / AIToolMaster / AdminAllowList）を作成し、
- * ローカルJSON（src/server/data/*.json）の内容を初期データとして書き込む一度きりのセットアップスクリプト。
+ * ローカルJSON（src/server/data/*.json）の内容で**タブの中身を丸ごと置き換える**セットアップスクリプト。
+ * 既存の内容がある場合は上書きされる（read-modify-writeの繰り返しではなく一括置き換えのため、
+ * 何度実行しても同じ結果になる＝再実行しても安全）。
  *
  * 実行前に .env で以下を設定しておくこと:
  *   GOOGLE_SERVICE_ACCOUNT_EMAIL / GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY / GOOGLE_SHEETS_SPREADSHEET_ID
@@ -18,7 +20,7 @@ if (!spreadsheetId) {
 }
 
 const { ensureTab } = await import("../src/server/sheetsClient.ts");
-const { sheetsStore } = await import("../src/server/sheetsStore.ts");
+const { seedableCollections } = await import("../src/server/sheetsStore.ts");
 const departments = (await import("../src/server/data/departments.json", { with: { type: "json" } })).default;
 const checkItems = (await import("../src/server/data/checkItems.json", { with: { type: "json" } })).default;
 const caseStudies = (await import("../src/server/data/caseStudies.json", { with: { type: "json" } })).default;
@@ -35,19 +37,19 @@ async function main() {
   }
 
   console.log("部門マスタを書き込み中...");
-  for (const d of departments as any[]) await sheetsStore.departments.create(d);
+  await seedableCollections.departments.replaceAll(departments as any[]);
 
-  console.log("チェック項目マスタを書き込み中...（84件、少し時間がかかります）");
-  for (const c of checkItems as any[]) await sheetsStore.checkItems.create(c);
+  console.log("チェック項目マスタを書き込み中...（84件）");
+  await seedableCollections.checkItems.replaceAll(checkItems as any[]);
 
   console.log("他社事例マスタを書き込み中...");
-  for (const c of caseStudies as any[]) await sheetsStore.caseStudies.create(c);
+  await seedableCollections.caseStudies.replaceAll(caseStudies as any[]);
 
   console.log("AIツールマスタを書き込み中...");
-  for (const t of aiTools as any[]) await sheetsStore.aiTools.create(t);
+  await seedableCollections.aiTools.replaceAll(aiTools as any[]);
 
   console.log("管理者許可リストを書き込み中...");
-  for (const a of adminAllowList as any[]) await sheetsStore.adminAllowList.create(a);
+  await seedableCollections.adminAllowList.replaceAll(adminAllowList as any[]);
 
   console.log("完了しました。スプレッドシートを開いて内容を確認してください:");
   console.log(`https://docs.google.com/spreadsheets/d/${spreadsheetId}/edit`);
