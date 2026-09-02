@@ -18,5 +18,5 @@
     "noFallthroughCasesInSwitch": true,
     "types": ["node"]
   },
-  "include": ["src", "server.ts", "src/server"]
+  "include": ["src", "server.ts", "src/server", "scripts"]
 }
