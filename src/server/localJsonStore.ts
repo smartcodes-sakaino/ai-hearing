@@ -51,10 +51,12 @@ function fileCollection<T extends { id: string }>(name: string, idPrefix: string
   };
 }
 
-function readOnlyFileCollection<T>(name: string): ReadOnlyCollection<T> {
+/** 伴走支援リストの元データ(Google Sheets)には一意のID列がないため、行番号からidを合成する */
+function supportServicesCollection(): ReadOnlyCollection<import("../types.ts").SupportService> {
   return {
     async list() {
-      return readJson<T>(name);
+      const rows = await readJson<Omit<import("../types.ts").SupportService, "id">>("supportServices");
+      return rows.map((r, i) => ({ id: `ROW_${i}`, ...r }));
     },
   };
 }
@@ -65,5 +67,5 @@ export const localJsonStore: DataStore = {
   caseStudies: fileCollection("caseStudies", "CASE"),
   aiTools: fileCollection("aiTools", "TOOL"),
   adminAllowList: fileCollection("adminAllowList", "ADMIN"),
-  supportServices: readOnlyFileCollection("supportServices"),
+  supportServices: supportServicesCollection(),
 };

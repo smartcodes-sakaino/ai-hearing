@@ -47,8 +47,7 @@ export async function listAiTools(): Promise<AiTool[]> {
 
 export async function listSupportServices(): Promise<SupportService[]> {
   const store = await getStore();
-  const items = await store.supportServices.list();
-  return [...items].sort((a, b) => a.order - b.order);
+  return store.supportServices.list(); // シート上の並び順をそのまま使う
 }
 
 export async function findAdminByEmail(email: string): Promise<AdminUser | undefined> {

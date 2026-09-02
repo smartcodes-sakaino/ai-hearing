@@ -34,14 +34,32 @@ export interface AiTool {
   order: number;
 }
 
+/**
+ * ai-simulatorの実データ「AI Diagnostic Tool Database」内の「伴走支援リスト」タブ
+ * （分類/メニュー名/難易度/消費ポイント/顧客の困りごと/AI活用内容/AI活用内容 境野さんコメント/
+ *   具体的に何がどう改善されるか/現状工数/AI活用後工数/月間件数/月間削減時間/削減率/
+ *   月間削減額目安/推奨パック/推奨プラン/効果区分）をそのまま読み取り専用で参照する。
+ * ai-hearing独自のマスタは持たない。
+ */
 export interface SupportService {
   id: string;
-  name: string;
-  category: string;
-  content: string;
-  problem: string;
-  expectedEffect: string;
-  order: number;
+  category: string; // 分類
+  name: string; // メニュー名
+  difficulty: string; // 難易度（★の数）
+  points: string; // 消費ポイント
+  customerProblem: string; // 顧客の困りごと
+  aiUsageContent: string; // AI活用内容
+  sakainoComment: string; // AI活用内容 境野さんコメント
+  improvementDetail: string; // 具体的に何がどう改善されるか
+  currentHours: string; // 現状工数
+  afterHours: string; // AI活用後工数
+  monthlyCount: string; // 月間件数
+  monthlyReductionHours: string; // 月間削減時間
+  reductionRate: string; // 削減率
+  monthlySavingsAmount: string; // 月間削減額目安
+  recommendedPack: string; // 推奨パック
+  recommendedPlan: string; // 推奨プラン
+  effectCategory: string; // 効果区分
 }
 
 export const SCALE_LABELS = [

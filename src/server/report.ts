@@ -36,6 +36,32 @@ function buildPriorities(allScores: PriorityEntry[], deptOrderIndex: Map<string,
     .slice(0, 3);
 }
 
+/**
+ * 部署名 → 伴走支援リストの「分類」列の値。
+ * 実データ（AI Diagnostic Tool Database内「伴走支援リスト」タブ）は複数の時期にまたがって
+ * 追加されてきた経緯があり、分類名の付け方が完全には統一されていない
+ * （例:「カスタマーサポート」「カスタマーサポート部」の両方が存在する、
+ * 総務部と法務部が「管理部門・総務・法務」としてまとめて登録されている等）ため、
+ * 一部の部署は複数の分類名を候補として持たせている。分類が新設・変更された場合はここを更新する。
+ * 経理部は対応する分類が現状シート上に存在しない。
+ */
+const DEPARTMENT_TO_SUPPORT_CATEGORIES: Record<string, string[]> = {
+  "営業部": ["営業"],
+  "人事部": ["人事・採用"],
+  "総務部": ["管理部門・総務・法務"],
+  "情報システム部": ["開発・情報システム"],
+  "マーケティング部": ["マーケティング", "広告・制作"],
+  "経営企画部": ["経営企画・社長室"],
+  "広報部": ["広報部"],
+  "法務部": ["法務部", "管理部門・総務・法務"],
+  "購買・調達部": ["購買・調達部"],
+  "製造部": ["製造部"],
+  "品質管理部": ["品質管理部"],
+  "物流・倉庫管理部": ["物流・倉庫管理部"],
+  "カスタマーサポート部": ["カスタマーサポート部", "カスタマーサポート"],
+  "研究開発部": ["研究開発部"],
+};
+
 /** 詳細設計書「2. 伴走サポート選定ロジック」に対応 */
 async function buildSupport(
   departmentIds: string[],
@@ -54,15 +80,22 @@ async function buildSupport(
     .map((x) => deptById.get(x.deptId)?.name ?? "")
     .filter(Boolean);
 
+  const candidateCategories = focusDeptNames.flatMap((name) => DEPARTMENT_TO_SUPPORT_CATEGORIES[name] ?? []);
+
   const services = await listSupportServices();
-  const matched = services.find((s) => focusDeptNames.some((name) => s.category.includes(name)));
+  const matched = services.find((s) => candidateCategories.includes(s.category));
   const service = matched ?? services[0];
 
+  if (!service) {
+    return { name: "", description: "" };
+  }
+
   return {
-    name: service?.name ?? "",
-    description: service
-      ? `${service.content}を通じて、${focusDeptNames.join("・")}の優先課題から着手できるよう伴走します。`
-      : "",
+    name: `${service.name}（${service.category}）`,
+    description:
+      `${service.sakainoComment} ` +
+      `${service.improvementDetail} ` +
+      (service.monthlySavingsAmount ? `月間削減額目安：${service.monthlySavingsAmount}。` : ""),
   };
 }
 

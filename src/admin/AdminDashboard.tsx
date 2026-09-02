@@ -119,11 +119,12 @@ function SupportServicesPanel() {
     <div>
       <h2 className="text-[21px] font-semibold">伴走支援リスト</h2>
       <p className="mt-2 max-w-[60ch] text-[14px] leading-[1.7] text-[var(--text-muted)]">
-        伴走支援リストはai-simulatorと共通のGoogleスプレッドシートを読み取り専用で参照しています。
+        伴走支援リストは、ai-simulatorの本番スプレッドシート「AI Diagnostic Tool Database」内の
+        「伴走支援リスト」タブを読み取り専用で参照しています。
         内容の追加・編集は下記のシートを直接開いて行ってください（このアプリからは編集できません）。
       </p>
       <a
-        href="https://docs.google.com/spreadsheets/d/12OW5mIkTmPdfkGI4GzAehxZ-PUHFbeugiuuTGY2a7fI/edit"
+        href="https://docs.google.com/spreadsheets/d/1_zk31r0pmg-HDRUOj4W1y63IRQp_c6Ing6yISe8yzT4/edit"
         target="_blank"
         rel="noreferrer"
         className="mt-4 inline-flex items-center gap-2 rounded-[10px] bg-[var(--accent)] px-5 py-2.5 text-[14px] font-semibold text-[var(--accent-contrast)] hover:bg-[var(--accent-strong)]"

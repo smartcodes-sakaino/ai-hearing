@@ -11,12 +11,14 @@ import type {
 
 /**
  * Google Sheetsをデータストアとして使う実装。
- * ai-hearing専用のスプレッドシート（GOOGLE_SHEETS_SPREADSHEET_ID）に
+ * ai-hearing専用のスプレッドシート（GOOGLE_SHEETS_SPREADSHEET_ID、"ai-hearingデータベース"）に
  * DepartmentMaster / CheckItemMaster / CaseStudyMaster / AIToolMaster / AdminAllowList の
- * 5タブを用意しておく（初回は「チェック項目マスタ_初期データ_ai-hearing」等の内容を
- * 手動でこのスプレッドシートにコピーするか、タブ名をそれぞれ合わせて共有すること）。
- * 伴走支援リストはai-simulatorと共通の別スプレッドシート（GOOGLE_SHEETS_SUPPORT_SPREADSHEET_ID）を
- * 読み取り専用で参照する。
+ * 5タブを用意しておく（npm run seed:sheets で初期データを投入できる）。
+ * 伴走支援リストは、ai-simulatorの本番スプレッドシート「AI Diagnostic Tool Database」内の
+ * 「伴走支援リスト」タブ（GOOGLE_SHEETS_SUPPORT_SPREADSHEET_ID / GOOGLE_SHEETS_SUPPORT_TAB_NAME）を
+ * そのまま読み取り専用で参照する。ai-hearing独自の簡易マスタは作らない
+ * （実データを直接見た結果、分類/メニュー名/難易度/消費ポイント/顧客の困りごと/AI活用内容/
+ * 「AI活用内容 境野さんコメント」等17列の、実運用で使われている本物のリストだったため）。
  */
 
 function requiredEnv(name: string): string {
@@ -186,14 +188,25 @@ const adminAllowList = sheetCollection<AdminUser>(
 const supportServices: ReadOnlyCollection<SupportService> = {
   async list() {
     const rows = await readTable(supportSpreadsheetId(), supportTabName());
-    return rows.map((r) => ({
-      id: r["サービスID"],
-      name: r["サービス名"],
-      category: r["対応カテゴリ"],
-      content: r["支援内容"],
-      problem: r["解決課題"],
-      expectedEffect: r["期待効果"],
-      order: Number(r["表示順"] || 0),
+    return rows.map((r, i) => ({
+      id: `ROW_${i}`, // このシートに一意のID列がないため行番号から生成
+      category: r["分類"],
+      name: r["メニュー名"],
+      difficulty: r["難易度"],
+      points: r["消費ポイント"],
+      customerProblem: r["顧客の困りごと"],
+      aiUsageContent: r["AI活用内容"],
+      sakainoComment: r["AI活用内容 境野さんコメント"],
+      improvementDetail: r["具体的に何がどう改善されるか"],
+      currentHours: r["現状工数"],
+      afterHours: r["AI活用後工数"],
+      monthlyCount: r["月間件数"],
+      monthlyReductionHours: r["月間削減時間"],
+      reductionRate: r["削減率"],
+      monthlySavingsAmount: r["月間削減額目安"],
+      recommendedPack: r["推奨パック"],
+      recommendedPlan: r["推奨プラン"],
+      effectCategory: r["効果区分"],
     }));
   },
 };
