@@ -1,0 +1,42 @@
+[
+  {
+    "id": "TOOL_001",
+    "name": "ChatGPT Business",
+    "officialPriceUrl": "https://openai.com/chatgpt/pricing/",
+    "price": "$20/ユーザー/月(年払い、最少2席から)",
+    "features": "文章のドラフト作成・要約・議事録整理など汎用的な生成AI活用に幅広く対応。部署を問わず導入しやすい",
+    "fetchedAt": "2026-09-02",
+    "enabled": true,
+    "order": 10
+  },
+  {
+    "id": "TOOL_002",
+    "name": "Microsoft 365 Copilot",
+    "officialPriceUrl": "https://www.microsoft.com/en-us/microsoft-365/copilot/business",
+    "price": "$21/ユーザー/月(年払い・通常価格、月払いは$25.20)",
+    "features": "Word・Excel・Outlook・Teamsに統合。資料作成・メール対応・データ集計・議事録要約を横断的にAI化できる",
+    "fetchedAt": "2026-09-02",
+    "enabled": true,
+    "order": 20
+  },
+  {
+    "id": "TOOL_003",
+    "name": "Google Workspace Business Standard(Gemini込み)",
+    "officialPriceUrl": "https://workspace.google.com/pricing",
+    "price": "¥1,600/ユーザー/月(年払い・税別)",
+    "features": "Gmail・ドキュメント・Meet等にGeminiが標準搭載。追加ライセンス不要でAI活用を始められる",
+    "fetchedAt": "2026-09-02",
+    "enabled": true,
+    "order": 30
+  },
+  {
+    "id": "TOOL_004",
+    "name": "Notion Business(Notion AI込み)",
+    "officialPriceUrl": "https://www.notion.com/pricing",
+    "price": "¥3,150/ユーザー/月(年払い)",
+    "features": "ドキュメント作成・会議メモの自動要約・社内ナレッジ横断検索(Notion Agent)に対応",
+    "fetchedAt": "2026-09-02",
+    "enabled": true,
+    "order": 40
+  }
+]

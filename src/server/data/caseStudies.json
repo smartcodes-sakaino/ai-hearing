@@ -1,0 +1,62 @@
+[
+  {
+    "id": "CASE_001",
+    "departmentId": "DEP_001",
+    "title": "パナソニック コネクトが生成AI「ConnectAI」を全社導入",
+    "industry": "電機・製造",
+    "body": "2023年2月よりOpenAIの大規模言語モデルをベースにした社内AIアシスタント「ConnectAI」を国内全社員約12,400人に展開",
+    "effect": "2023年6月〜2024年5月の1年間で全社員18.6万時間の労働時間を削減",
+    "sourceUrl": "https://news.panasonic.com/jp/press/jn240625-1",
+    "fetchedAt": "2026-09-02"
+  },
+  {
+    "id": "CASE_002",
+    "departmentId": "DEP_002",
+    "title": "freeeがAI-OCRによる請求書・領収書の自動読み取りを提供",
+    "industry": "会計・SaaS",
+    "body": "受取請求書の複数明細行(項目・単価・数量・金額)をAI-OCRが自動読み取りし、仕訳への入力を効率化",
+    "effect": "経理担当者の手入力・転記作業を大幅に削減",
+    "sourceUrl": "https://corp.freee.co.jp/news/freee_invoice_receipt.html",
+    "fetchedAt": "2026-09-02"
+  },
+  {
+    "id": "CASE_003",
+    "departmentId": "DEP_005",
+    "title": "Microsoft Teams PremiumのAI議事録・要約機能",
+    "industry": "IT・コラボレーションツール",
+    "body": "会議の文字起こし・要約(インテリジェントリキャップ)を自動生成し、議事録作成の負担を軽減",
+    "effect": "議事録作成時間を大幅に短縮し、社内共有のスピードが向上",
+    "sourceUrl": "https://www.microsoft.com/en-us/microsoft-teams/premium",
+    "fetchedAt": "2026-09-02"
+  },
+  {
+    "id": "CASE_004",
+    "departmentId": "DEP_014",
+    "title": "Zendesk AIエージェントによる問い合わせ自動対応",
+    "industry": "カスタマーサポートSaaS",
+    "body": "問い合わせ内容をAIが解析して最適な担当者へ自動振り分け(インテリジェントトリアージ)、ナレッジベースから自律的に回答を生成",
+    "effect": "一次対応の自動化とエスカレーション精度の向上を実現",
+    "sourceUrl": "https://dev.classmethod.jp/articles/zendesk-update-202405-ai-agent/",
+    "fetchedAt": "2026-09-02"
+  },
+  {
+    "id": "CASE_005",
+    "departmentId": "DEP_006",
+    "title": "IBM Watson Discoveryによる市場・競合情報の自動抽出",
+    "industry": "ITソリューション",
+    "body": "大量の非構造化データから市場トレンドや競合情報をAIが抽出し、戦略策定を支援",
+    "effect": "市場・競合リサーチにかかる時間を大幅に短縮",
+    "sourceUrl": "https://www.ibm.com/products/watson-discovery",
+    "fetchedAt": "2026-09-02"
+  },
+  {
+    "id": "CASE_006",
+    "departmentId": "DEP_007",
+    "title": "Salesforce EinsteinによるAI顧客データ分析",
+    "industry": "CRM・SaaS",
+    "body": "AIが顧客データを分析し、最適なリードやターゲット企業を推奨",
+    "effect": "営業・企画部門の効率的な戦略立案とアプローチ精度の向上に貢献",
+    "sourceUrl": "https://www.salesforce.com/jp/einstein/",
+    "fetchedAt": "2026-09-02"
+  }
+]

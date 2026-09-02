@@ -1,0 +1,81 @@
+@import "tailwindcss";
+
+:root {
+  --bg: #f6f3ed;
+  --surface: #ffffff;
+  --surface-alt: #fbf8f2;
+  --text: #221f1a;
+  --text-muted: #736a5c;
+  --border: #e6ded0;
+  --border-strong: #d8cdb8;
+  --accent: #0f6b60;
+  --accent-strong: #0a4c44;
+  --accent-soft: #dcece7;
+  --accent-contrast: #ffffff;
+  --priority: #b8631c;
+  --priority-soft: #f6e3d1;
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #1a1815;
+    --surface: #232019;
+    --surface-alt: #28251d;
+    --text: #f1ece1;
+    --text-muted: #a89c88;
+    --border: #3a3529;
+    --border-strong: #4a4433;
+    --accent: #3fcab5;
+    --accent-strong: #7fe0d0;
+    --accent-soft: #28372f;
+    --accent-contrast: #0d211d;
+    --priority: #f0a865;
+    --priority-soft: #3a2c1c;
+    color-scheme: dark;
+  }
+}
+
+:root[data-theme="dark"] {
+  --bg: #1a1815;
+  --surface: #232019;
+  --surface-alt: #28251d;
+  --text: #f1ece1;
+  --text-muted: #a89c88;
+  --border: #3a3529;
+  --border-strong: #4a4433;
+  --accent: #3fcab5;
+  --accent-strong: #7fe0d0;
+  --accent-soft: #28372f;
+  --accent-contrast: #0d211d;
+  --priority: #f0a865;
+  --priority-soft: #3a2c1c;
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: "Work Sans", sans-serif;
+  font-size: 16px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3 {
+  font-family: "Fraunces", serif;
+  font-weight: 600;
+  text-wrap: balance;
+  margin: 0;
+}
+
+.font-mono-data {
+  font-family: "IBM Plex Mono", monospace;
+}
