@@ -204,7 +204,8 @@ const supportServices: ReadOnlyCollection<SupportService> = {
       points: r["消費ポイント"],
       customerProblem: r["顧客の困りごと"],
       aiUsageContent: r["AI活用内容"],
-      sakainoComment: r["AI活用内容 境野さんコメント"],
+      // ヘッダーセルが2行に折り返されているため、実際の列名には改行が含まれる
+      sakainoComment: r["AI活用内容\n境野さんコメント"],
       improvementDetail: r["具体的に何がどう改善されるか"],
       currentHours: r["現状工数"],
       afterHours: r["AI活用後工数"],
