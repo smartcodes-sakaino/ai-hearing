@@ -42,7 +42,10 @@ export async function listCaseStudies(departmentIds: string[]): Promise<CaseStud
 export async function listAiTools(): Promise<AiTool[]> {
   const store = await getStore();
   const items = await store.aiTools.list();
-  return items.filter((tool) => tool.enabled).sort((a, b) => a.order - b.order);
+  return items
+    .filter((tool) => tool.enabled)
+    // 要確認（自動取得に失敗した等）のツールは、他に選択肢がある限りレポートで優先表示しない
+    .sort((a, b) => Number(a.needsReview) - Number(b.needsReview) || a.order - b.order);
 }
 
 export async function listSupportServices(): Promise<SupportService[]> {

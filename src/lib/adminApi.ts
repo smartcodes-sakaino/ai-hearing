@@ -48,3 +48,24 @@ export function removeResource(path: string, id: string): Promise<void> {
     if (!r.ok) throw new Error(`Request failed: ${r.status}`);
   });
 }
+
+export interface BatchResult {
+  startedAt: string;
+  finishedAt: string;
+  added: number;
+  updated: number;
+  failed: number;
+  details: string[];
+}
+
+export function fetchBatchStatus(): Promise<{ caseStudies: BatchResult | null; aiTools: BatchResult | null }> {
+  return fetch("/api/admin/batch-status").then((r) => json(r));
+}
+
+export function runBatchNow(target: "case-studies" | "ai-tools"): Promise<BatchResult> {
+  return fetch("/api/admin/batch/run-now", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ target }),
+  }).then((r) => json<BatchResult>(r));
+}

@@ -21,6 +21,7 @@ export interface CaseStudy {
   effect: string;
   sourceUrl: string;
   fetchedAt: string;
+  source: "auto" | "manual";
 }
 
 export interface AiTool {
@@ -32,6 +33,9 @@ export interface AiTool {
   fetchedAt: string;
   enabled: boolean;
   order: number;
+  source: "auto" | "manual";
+  /** 自動取得に失敗した場合などにtrue。管理者が確認するまで既存の値を保持する */
+  needsReview: boolean;
 }
 
 /**

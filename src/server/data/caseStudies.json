@@ -7,7 +7,8 @@
     "body": "2023年2月よりOpenAIの大規模言語モデルをベースにした社内AIアシスタント「ConnectAI」を国内全社員約12,400人に展開",
     "effect": "2023年6月〜2024年5月の1年間で全社員18.6万時間の労働時間を削減",
     "sourceUrl": "https://news.panasonic.com/jp/press/jn240625-1",
-    "fetchedAt": "2026-09-02"
+    "fetchedAt": "2026-09-02",
+    "source": "manual"
   },
   {
     "id": "CASE_002",
@@ -17,7 +18,8 @@
     "body": "受取請求書の複数明細行(項目・単価・数量・金額)をAI-OCRが自動読み取りし、仕訳への入力を効率化",
     "effect": "経理担当者の手入力・転記作業を大幅に削減",
     "sourceUrl": "https://corp.freee.co.jp/news/freee_invoice_receipt.html",
-    "fetchedAt": "2026-09-02"
+    "fetchedAt": "2026-09-02",
+    "source": "manual"
   },
   {
     "id": "CASE_003",
@@ -27,7 +29,8 @@
     "body": "会議の文字起こし・要約(インテリジェントリキャップ)を自動生成し、議事録作成の負担を軽減",
     "effect": "議事録作成時間を大幅に短縮し、社内共有のスピードが向上",
     "sourceUrl": "https://www.microsoft.com/en-us/microsoft-teams/premium",
-    "fetchedAt": "2026-09-02"
+    "fetchedAt": "2026-09-02",
+    "source": "manual"
   },
   {
     "id": "CASE_004",
@@ -37,7 +40,8 @@
     "body": "問い合わせ内容をAIが解析して最適な担当者へ自動振り分け(インテリジェントトリアージ)、ナレッジベースから自律的に回答を生成",
     "effect": "一次対応の自動化とエスカレーション精度の向上を実現",
     "sourceUrl": "https://dev.classmethod.jp/articles/zendesk-update-202405-ai-agent/",
-    "fetchedAt": "2026-09-02"
+    "fetchedAt": "2026-09-02",
+    "source": "manual"
   },
   {
     "id": "CASE_005",
@@ -47,7 +51,8 @@
     "body": "大量の非構造化データから市場トレンドや競合情報をAIが抽出し、戦略策定を支援",
     "effect": "市場・競合リサーチにかかる時間を大幅に短縮",
     "sourceUrl": "https://www.ibm.com/products/watson-discovery",
-    "fetchedAt": "2026-09-02"
+    "fetchedAt": "2026-09-02",
+    "source": "manual"
   },
   {
     "id": "CASE_006",
@@ -57,6 +62,7 @@
     "body": "AIが顧客データを分析し、最適なリードやターゲット企業を推奨",
     "effect": "営業・企画部門の効率的な戦略立案とアプローチ精度の向上に貢献",
     "sourceUrl": "https://www.salesforce.com/jp/einstein/",
-    "fetchedAt": "2026-09-02"
+    "fetchedAt": "2026-09-02",
+    "source": "manual"
   }
 ]

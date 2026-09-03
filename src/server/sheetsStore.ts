@@ -124,7 +124,7 @@ const checkItems = sheetCollection<CheckItem>(
 const caseStudies = sheetCollection<CaseStudy>(
   "CaseStudyMaster",
   "CASE",
-  ["事例ID", "対象部門ID", "タイトル", "業種", "内容", "効果", "情報源URL", "取得日時"],
+  ["事例ID", "対象部門ID", "タイトル", "業種", "内容", "効果", "情報源URL", "取得日時", "登録種別"],
   (c) => ({
     事例ID: c.id,
     対象部門ID: c.departmentId,
@@ -134,6 +134,7 @@ const caseStudies = sheetCollection<CaseStudy>(
     効果: c.effect,
     情報源URL: c.sourceUrl,
     取得日時: c.fetchedAt,
+    登録種別: c.source === "auto" ? "自動" : "手動",
   }),
   (r) => ({
     id: r["事例ID"],
@@ -144,13 +145,14 @@ const caseStudies = sheetCollection<CaseStudy>(
     effect: r["効果"],
     sourceUrl: r["情報源URL"],
     fetchedAt: r["取得日時"],
+    source: r["登録種別"] === "自動" ? "auto" : "manual",
   }),
 );
 
 const aiTools = sheetCollection<AiTool>(
   "AIToolMaster",
   "TOOL",
-  ["ツールID", "ツール名", "公式料金ページURL", "料金", "特徴", "取得日時", "有効フラグ", "表示順"],
+  ["ツールID", "ツール名", "公式料金ページURL", "料金", "特徴", "取得日時", "登録種別", "有効フラグ", "表示順", "要確認フラグ"],
   (t) => ({
     ツールID: t.id,
     ツール名: t.name,
@@ -158,8 +160,10 @@ const aiTools = sheetCollection<AiTool>(
     料金: t.price,
     特徴: t.features,
     取得日時: t.fetchedAt,
+    登録種別: t.source === "auto" ? "自動" : "手動",
     有効フラグ: t.enabled,
     表示順: t.order,
+    要確認フラグ: t.needsReview,
   }),
   (r) => ({
     id: r["ツールID"],
@@ -168,8 +172,10 @@ const aiTools = sheetCollection<AiTool>(
     price: r["料金"],
     features: r["特徴"],
     fetchedAt: r["取得日時"],
+    source: r["登録種別"] === "自動" ? "auto" : "manual",
     enabled: r["有効フラグ"] === "true" || r["有効フラグ"] === "TRUE",
     order: Number(r["表示順"] || 0),
+    needsReview: r["要確認フラグ"] === "true" || r["要確認フラグ"] === "TRUE",
   }),
 );
 

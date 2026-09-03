@@ -3,6 +3,7 @@ import type { Collection } from "./dataStore.ts";
 import { getStore } from "./dataStoreProvider.ts";
 import { requireAdmin } from "./auth.ts";
 import { asyncHandler } from "./asyncHandler.ts";
+import { getLastBatchStatus, refreshAiToolPrices, refreshCaseStudies } from "./batch.ts";
 
 export const adminRouter = Router();
 adminRouter.use(requireAdmin);
@@ -64,5 +65,24 @@ adminRouter.get(
   asyncHandler(async (_req, res) => {
     const store = await getStore();
     res.json(await store.supportServices.list());
+  }),
+);
+
+// 自動収集バッチ（フェーズ3）
+adminRouter.get("/batch-status", (_req, res) => {
+  res.json(getLastBatchStatus());
+});
+
+adminRouter.post(
+  "/batch/run-now",
+  asyncHandler(async (req, res) => {
+    const { target } = req.body as { target?: "case-studies" | "ai-tools" };
+    if (target === "case-studies") {
+      res.json(await refreshCaseStudies());
+    } else if (target === "ai-tools") {
+      res.json(await refreshAiToolPrices());
+    } else {
+      res.status(400).json({ error: "target must be 'case-studies' or 'ai-tools'" });
+    }
   }),
 );

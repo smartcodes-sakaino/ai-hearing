@@ -11,12 +11,14 @@ if (!process.env.SESSION_SECRET) {
 const { router } = await import("./src/server/routes.ts");
 const { authRouter } = await import("./src/server/authRoutes.ts");
 const { adminRouter } = await import("./src/server/adminRoutes.ts");
+const { internalBatchRouter } = await import("./src/server/internalBatchRoutes.ts");
 
 const app = express();
 app.use(express.json());
 app.use("/api/admin", adminRouter);
 app.use("/api", router);
 app.use("/auth", authRouter);
+app.use("/internal/batch", internalBatchRouter);
 
 // APIルート内で起きたエラーはここでcatchしてJSONで返す（プロセスを落とさない）
 app.use((err: unknown, _req: express.Request, res: express.Response, _next: express.NextFunction) => {

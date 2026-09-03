@@ -7,7 +7,9 @@
     "features": "文章のドラフト作成・要約・議事録整理など汎用的な生成AI活用に幅広く対応。部署を問わず導入しやすい",
     "fetchedAt": "2026-09-02",
     "enabled": true,
-    "order": 10
+    "order": 10,
+    "source": "manual",
+    "needsReview": true
   },
   {
     "id": "TOOL_002",
@@ -17,7 +19,9 @@
     "features": "Word・Excel・Outlook・Teamsに統合。資料作成・メール対応・データ集計・議事録要約を横断的にAI化できる",
     "fetchedAt": "2026-09-02",
     "enabled": true,
-    "order": 20
+    "order": 20,
+    "source": "manual",
+    "needsReview": false
   },
   {
     "id": "TOOL_003",
@@ -27,7 +31,9 @@
     "features": "Gmail・ドキュメント・Meet等にGeminiが標準搭載。追加ライセンス不要でAI活用を始められる",
     "fetchedAt": "2026-09-02",
     "enabled": true,
-    "order": 30
+    "order": 30,
+    "source": "manual",
+    "needsReview": false
   },
   {
     "id": "TOOL_004",
@@ -37,6 +43,8 @@
     "features": "ドキュメント作成・会議メモの自動要約・社内ナレッジ横断検索(Notion Agent)に対応",
     "fetchedAt": "2026-09-02",
     "enabled": true,
-    "order": 40
+    "order": 40,
+    "source": "manual",
+    "needsReview": false
   }
 ]
