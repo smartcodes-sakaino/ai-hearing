@@ -76,10 +76,21 @@ export function readSession(req: import("express").Request): SessionPayload | nu
   return verify(token);
 }
 
-export const requireAdmin: RequestHandler = (req, res, next) => {
+/**
+ * 署名付きCookieの検証だけでなく、毎回「管理者許可リスト」に今も存在するかを確認する。
+ * こうしないと、許可リストから削除してもCookieの有効期限（12時間）が切れるまで
+ * アクセスできてしまう（2026-09-03のテストで発覚した不具合の修正）。
+ */
+export const requireAdmin: RequestHandler = async (req, res, next) => {
   const session = readSession(req);
   if (!session) {
     res.status(401).json({ error: "ログインが必要です" });
+    return;
+  }
+  const stillAllowed = await findAdminByEmail(session.email);
+  if (!stillAllowed) {
+    clearSessionCookie(res);
+    res.status(401).json({ error: "アクセス権限がありません" });
     return;
   }
   (req as any).adminUser = session;

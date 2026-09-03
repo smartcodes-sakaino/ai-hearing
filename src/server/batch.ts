@@ -84,7 +84,7 @@ export async function refreshAiToolPrices(): Promise<BatchResult> {
     try {
       const price = await fetchOfficialPrice(tool.officialPriceUrl);
       if (price) {
-        await store.aiTools.update(tool.id, { price, fetchedAt: today, needsReview: false } as any);
+        await store.aiTools.update(tool.id, { price, fetchedAt: today, source: "auto", needsReview: false } as any);
         updated++;
         details.push(`${tool.name}: 更新 - ${price}`);
       } else {
@@ -93,6 +93,8 @@ export async function refreshAiToolPrices(): Promise<BatchResult> {
         details.push(`${tool.name}: 取得失敗のため要確認フラグを設定（既存の料金は保持）`);
       }
     } catch (e) {
+      // Gemini呼び出し自体の例外（レート制限・一時的な過負荷等）も「抽出失敗」として扱い、要確認フラグを立てる
+      await store.aiTools.update(tool.id, { needsReview: true } as any).catch(() => {});
       failed++;
       details.push(`${tool.name}: エラー - ${e instanceof Error ? e.message : String(e)}`);
     }
