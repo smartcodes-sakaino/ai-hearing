@@ -182,19 +182,21 @@ const aiTools = sheetCollection<AiTool>(
 const adminAllowList = sheetCollection<AdminUser>(
   "AdminAllowList",
   "ADMIN",
-  ["管理者ID", "メールアドレス", "表示名", "権限", "登録日時"],
+  ["管理者ID", "メールアドレス", "表示名", "権限", "パスワードハッシュ", "登録日時"],
   (a) => ({
     管理者ID: a.id,
     メールアドレス: a.email,
     表示名: a.displayName,
     権限: a.role,
+    パスワードハッシュ: a.passwordHash,
     登録日時: a.createdAt,
   }),
   (r) => ({
     id: r["管理者ID"],
     email: r["メールアドレス"],
     displayName: r["表示名"],
-    role: r["権限"],
+    role: r["権限"] as AdminUser["role"],
+    passwordHash: r["パスワードハッシュ"],
     createdAt: r["登録日時"],
   }),
 );

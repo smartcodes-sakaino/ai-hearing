@@ -51,13 +51,14 @@ const FIELD_DEFS: Record<Exclude<TabKey, "support-services" | "batch">, FieldDef
   "allow-list": [
     { key: "email", label: "メールアドレス" },
     { key: "displayName", label: "表示名" },
-    { key: "role", label: "権限" },
-    { key: "createdAt", label: "登録日時" },
+    { key: "role", label: "権限", type: "select", options: ["最高権限", "管理者権限"] },
+    { key: "password", label: "パスワード", type: "password" },
   ],
 };
 
 export default function AdminDashboard({ user }: { user: AdminSessionUser }) {
   const [tab, setTab] = useState<TabKey>("departments");
+  const visibleTabs = TABS.filter((t) => t.key !== "allow-list" || user.role === "最高権限");
 
   async function handleLogout() {
     await logoutAdmin();
@@ -86,7 +87,7 @@ export default function AdminDashboard({ user }: { user: AdminSessionUser }) {
 
       <div className="mx-auto flex max-w-[1100px] gap-6 px-6 py-6">
         <nav className="w-[180px] flex-none">
-          {TABS.map((t) => (
+          {visibleTabs.map((t) => (
             <button
               key={t.key}
               onClick={() => setTab(t.key)}

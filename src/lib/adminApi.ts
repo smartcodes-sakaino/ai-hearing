@@ -9,7 +9,7 @@ async function json<T>(res: Response): Promise<T> {
 export interface AdminSessionUser {
   email: string;
   displayName: string;
-  role: string;
+  role: "最高権限" | "管理者権限";
 }
 
 export function fetchAdminSession(): Promise<{ user: AdminSessionUser | null }> {
@@ -17,6 +17,14 @@ export function fetchAdminSession(): Promise<{ user: AdminSessionUser | null }> 
     if (res.status === 401) return { user: null };
     return json(res);
   });
+}
+
+export function loginAdmin(email: string, password: string): Promise<{ user: AdminSessionUser }> {
+  return fetch("/auth/login", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email, password }),
+  }).then((r) => json(r));
 }
 
 export function logoutAdmin(): Promise<void> {

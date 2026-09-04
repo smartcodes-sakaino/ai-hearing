@@ -1,55 +1,40 @@
 import { Router } from "express";
-import {
-  buildGoogleLoginUrl,
-  checkAdminAllowed,
-  clearSessionCookie,
-  exchangeCodeForProfile,
-  issueSessionCookie,
-  readSession,
-} from "./auth.ts";
+import { authenticate, clearSessionCookie, getSessionAdmin, issueSessionCookie, publicUser } from "./auth.ts";
+import { asyncHandler } from "./asyncHandler.ts";
 
 export const authRouter = Router();
 
-authRouter.get("/google", (_req, res) => {
-  try {
-    res.redirect(buildGoogleLoginUrl());
-  } catch (e) {
-    res.status(500).send(e instanceof Error ? e.message : "OAuth設定エラー");
-  }
-});
-
-authRouter.get("/google/callback", async (req, res) => {
-  const code = req.query.code;
-  if (typeof code !== "string") {
-    res.status(400).send("認可コードがありません");
-    return;
-  }
-  try {
-    const profile = await exchangeCodeForProfile(code);
-    const admin = await checkAdminAllowed(profile.email);
-    if (!admin) {
-      res.status(403).send(
-        `このGoogleアカウント（${profile.email}）には管理画面へのアクセス権限がありません。管理者許可リストへの追加を管理者に依頼してください。`,
-      );
+authRouter.post(
+  "/login",
+  asyncHandler(async (req, res) => {
+    const { email, password } = req.body as { email?: string; password?: string };
+    if (!email || !password) {
+      res.status(400).json({ error: "メールアドレスとパスワードを入力してください" });
       return;
     }
-    issueSessionCookie(res, { email: admin.email, displayName: admin.displayName, role: admin.role });
-    res.redirect("/admin");
-  } catch (e) {
-    res.status(500).send(e instanceof Error ? e.message : "ログイン処理でエラーが発生しました");
-  }
-});
+    const user = await authenticate(email, password);
+    if (!user) {
+      res.status(401).json({ error: "メールアドレスまたはパスワードが正しくありません" });
+      return;
+    }
+    issueSessionCookie(res, user.email);
+    res.json({ user });
+  }),
+);
 
 authRouter.post("/logout", (_req, res) => {
   clearSessionCookie(res);
   res.json({ ok: true });
 });
 
-authRouter.get("/session", (req, res) => {
-  const session = readSession(req);
-  if (!session) {
-    res.status(401).json({ user: null });
-    return;
-  }
-  res.json({ user: { email: session.email, displayName: session.displayName, role: session.role } });
-});
+authRouter.get(
+  "/session",
+  asyncHandler(async (req, res) => {
+    const admin = await getSessionAdmin(req);
+    if (!admin) {
+      res.status(401).json({ user: null });
+      return;
+    }
+    res.json({ user: publicUser(admin) });
+  }),
+);

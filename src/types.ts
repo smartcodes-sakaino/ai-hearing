@@ -74,11 +74,15 @@ export const SCALE_LABELS = [
   "完全に定着・自動化されている",
 ] as const;
 
+export type AdminRole = "最高権限" | "管理者権限";
+export const ADMIN_ROLES: AdminRole[] = ["最高権限", "管理者権限"];
+
 export interface AdminUser {
   id: string;
   email: string;
   displayName: string;
-  role: string;
+  role: AdminRole;
+  passwordHash: string;
   createdAt: string;
 }
 

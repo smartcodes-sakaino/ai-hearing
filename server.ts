@@ -1,4 +1,3 @@
-import express from "express";
 import { loadEnv } from "./src/server/loadEnv.ts";
 
 loadEnv();
@@ -8,24 +7,8 @@ if (!process.env.SESSION_SECRET) {
   process.env.SESSION_SECRET = "dev-only-insecure-secret-please-set-in-env";
 }
 
-const { router } = await import("./src/server/routes.ts");
-const { authRouter } = await import("./src/server/authRoutes.ts");
-const { adminRouter } = await import("./src/server/adminRoutes.ts");
-const { internalBatchRouter } = await import("./src/server/internalBatchRoutes.ts");
-
-const app = express();
-app.use(express.json());
-app.use("/api/admin", adminRouter);
-app.use("/api", router);
-app.use("/auth", authRouter);
-app.use("/internal/batch", internalBatchRouter);
-
-// APIルート内で起きたエラーはここでcatchしてJSONで返す（プロセスを落とさない）
-app.use((err: unknown, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
-  console.error(err);
-  const message = err instanceof Error ? err.message : "internal server error";
-  res.status(500).json({ error: message });
-});
+const { createApp } = await import("./src/server/app.ts");
+const app = createApp();
 
 const port = process.env.PORT ? Number(process.env.PORT) : 5000;
 const isProd = process.env.NODE_ENV === "production";
@@ -34,6 +17,7 @@ async function start() {
   if (isProd) {
     const path = await import("node:path");
     const url = await import("node:url");
+    const express = (await import("express")).default;
     const dirname = path.dirname(url.fileURLToPath(import.meta.url));
     const publicDir = path.join(dirname, "dist/public");
     app.use(express.static(publicDir));

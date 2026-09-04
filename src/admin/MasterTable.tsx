@@ -4,7 +4,8 @@ import { createResource, listResource, removeResource, updateResource } from "..
 export interface FieldDef {
   key: string;
   label: string;
-  type?: "text" | "textarea" | "number" | "boolean";
+  type?: "text" | "textarea" | "number" | "boolean" | "password" | "select";
+  options?: string[];
 }
 
 interface Props {
@@ -94,11 +95,30 @@ export default function MasterTable({ title, description, resourcePath, fields }
         />
       );
     }
+    if (field.type === "select") {
+      return (
+        <select
+          className="w-full rounded-lg border border-[var(--border-strong)] bg-[var(--surface-alt)] px-2 py-1.5 text-[13.5px]"
+          value={value ?? ""}
+          onChange={(e) => onChange(e.target.value)}
+        >
+          <option value="" disabled>
+            選択してください
+          </option>
+          {(field.options ?? []).map((o) => (
+            <option key={o} value={o}>
+              {o}
+            </option>
+          ))}
+        </select>
+      );
+    }
     return (
       <input
-        type={field.type === "number" ? "number" : "text"}
+        type={field.type === "number" ? "number" : field.type === "password" ? "password" : "text"}
         className="w-full rounded-lg border border-[var(--border-strong)] bg-[var(--surface-alt)] px-2 py-1.5 text-[13.5px]"
         value={value ?? ""}
+        placeholder={field.type === "password" ? "変更する場合のみ入力" : undefined}
         onChange={(e) => onChange(field.type === "number" ? Number(e.target.value) : e.target.value)}
       />
     );
@@ -212,5 +232,6 @@ export default function MasterTable({ title, description, resourcePath, fields }
 
 function fieldDisplay(value: any, field: FieldDef) {
   if (field.type === "boolean") return value ? "✓" : "";
+  if (field.type === "password") return "••••••••";
   return String(value ?? "");
 }

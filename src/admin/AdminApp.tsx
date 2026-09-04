@@ -20,6 +20,6 @@ export default function AdminApp() {
     );
   }
 
-  if (!user) return <AdminLogin />;
+  if (!user) return <AdminLogin onLoggedIn={setUser} />;
   return <AdminDashboard user={user} />;
 }

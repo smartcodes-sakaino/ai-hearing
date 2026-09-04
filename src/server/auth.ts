@@ -1,7 +1,8 @@
 import crypto from "node:crypto";
 import type { RequestHandler } from "express";
-import { google } from "googleapis";
+import type { AdminUser } from "../types.ts";
 import { findAdminByEmail } from "./store.ts";
+import { verifyPassword } from "./password.ts";
 
 const SESSION_COOKIE = "admin_session";
 const SESSION_TTL_MS = 12 * 60 * 60 * 1000; // 12時間
@@ -16,8 +17,6 @@ function sessionSecret(): string {
 
 interface SessionPayload {
   email: string;
-  displayName: string;
-  role: string;
   exp: number;
 }
 
@@ -41,8 +40,8 @@ function verify(token: string): SessionPayload | null {
   }
 }
 
-export function issueSessionCookie(res: import("express").Response, payload: Omit<SessionPayload, "exp">) {
-  const token = sign({ ...payload, exp: Date.now() + SESSION_TTL_MS });
+export function issueSessionCookie(res: import("express").Response, email: string) {
+  const token = sign({ email, exp: Date.now() + SESSION_TTL_MS });
   res.cookie(SESSION_COOKIE, token, {
     httpOnly: true,
     sameSite: "lax",
@@ -69,65 +68,62 @@ function parseCookies(header: string | undefined): Record<string, string> {
   return result;
 }
 
-export function readSession(req: import("express").Request): SessionPayload | null {
+function readSessionEmail(req: import("express").Request): string | null {
   const cookies = parseCookies(req.headers.cookie);
   const token = cookies[SESSION_COOKIE];
   if (!token) return null;
-  return verify(token);
+  return verify(token)?.email ?? null;
 }
 
 /**
  * 署名付きCookieの検証だけでなく、毎回「管理者許可リスト」に今も存在するかを確認する。
- * こうしないと、許可リストから削除してもCookieの有効期限（12時間）が切れるまで
- * アクセスできてしまう（2026-09-03のテストで発覚した不具合の修正）。
+ * こうしないと、許可リストから削除・権限変更してもCookieの有効期限（12時間）が切れるまで
+ * 古い権限のままアクセスできてしまう。取得した最新のAdminUserを返すことで、
+ * 権限(role)の変更も次のリクエストから即座に反映される。
  */
+export async function getSessionAdmin(req: import("express").Request): Promise<AdminUser | null> {
+  const email = readSessionEmail(req);
+  if (!email) return null;
+  return (await findAdminByEmail(email)) ?? null;
+}
+
 export const requireAdmin: RequestHandler = async (req, res, next) => {
-  const session = readSession(req);
-  if (!session) {
+  const email = readSessionEmail(req);
+  if (!email) {
     res.status(401).json({ error: "ログインが必要です" });
     return;
   }
-  const stillAllowed = await findAdminByEmail(session.email);
-  if (!stillAllowed) {
+  const admin = await findAdminByEmail(email);
+  if (!admin) {
     clearSessionCookie(res);
     res.status(401).json({ error: "アクセス権限がありません" });
     return;
   }
-  (req as any).adminUser = session;
+  (req as any).adminUser = admin;
   next();
 };
 
-function oauthClient() {
-  const clientId = process.env.OAUTH_CLIENT_ID;
-  const clientSecret = process.env.OAUTH_CLIENT_SECRET;
-  const redirectUri = process.env.OAUTH_REDIRECT_URI;
-  if (!clientId || !clientSecret || !redirectUri) {
-    throw new Error("OAUTH_CLIENT_ID / OAUTH_CLIENT_SECRET / OAUTH_REDIRECT_URI が未設定です（.envを確認してください）");
+/** 「最高権限」の管理者のみアクセスできるルート用（管理者許可リスト自体の編集など） */
+export const requireOwner: RequestHandler = (req, res, next) => {
+  const admin = (req as any).adminUser as AdminUser | undefined;
+  if (admin?.role !== "最高権限") {
+    res.status(403).json({ error: "この操作には最高権限が必要です" });
+    return;
   }
-  return new google.auth.OAuth2(clientId, clientSecret, redirectUri);
+  next();
+};
+
+/** メールアドレス・パスワードで認証する。成功時はパスワードハッシュを含まないAdminUserを返す */
+export async function authenticate(email: string, password: string): Promise<Omit<AdminUser, "passwordHash"> | null> {
+  const admin = await findAdminByEmail(email);
+  if (!admin || !admin.passwordHash) return null;
+  const ok = await verifyPassword(password, admin.passwordHash);
+  if (!ok) return null;
+  const { passwordHash: _passwordHash, ...rest } = admin;
+  return rest;
 }
 
-export function buildGoogleLoginUrl(): string {
-  const client = oauthClient();
-  return client.generateAuthUrl({
-    access_type: "online",
-    scope: ["openid", "email", "profile"],
-    prompt: "select_account",
-  });
-}
-
-/** 認可コードをGoogleアカウント情報（メール・氏名）に交換する */
-export async function exchangeCodeForProfile(code: string): Promise<{ email: string; name: string }> {
-  const client = oauthClient();
-  const { tokens } = await client.getToken(code);
-  client.setCredentials(tokens);
-  const oauth2 = google.oauth2({ version: "v2", auth: client });
-  const { data } = await oauth2.userinfo.get();
-  if (!data.email) throw new Error("Googleアカウントからメールアドレスを取得できませんでした");
-  return { email: data.email, name: data.name ?? data.email };
-}
-
-/** 管理者許可リストに存在するアカウントかどうかを確認する */
-export async function checkAdminAllowed(email: string) {
-  return findAdminByEmail(email);
+export function publicUser(admin: AdminUser): Omit<AdminUser, "passwordHash"> {
+  const { passwordHash: _passwordHash, ...rest } = admin;
+  return rest;
 }

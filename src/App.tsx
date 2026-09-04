@@ -80,6 +80,12 @@ export default function App() {
           />
         )}
         {step === 3 && report && <ResultScreen report={report} onBack={() => setStep(2)} />}
+
+        <footer className="mt-10 text-center">
+          <a href="/admin" className="text-[12.5px] text-[var(--text-muted)] hover:text-[var(--accent)] hover:underline">
+            管理者はこちら
+          </a>
+        </footer>
       </div>
     </div>
   );
